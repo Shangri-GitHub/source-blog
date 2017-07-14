@@ -4,10 +4,6 @@ date: 2017-06-23 11:29:39
 tags:  ['java']
 ---
 
-``` bach
-"hexo-generator-json-content": "^3.0.1",  //今天报错待解决
-```
-
 ####  Mac配置java环境
 
 - 第一步： vi .zshrc
@@ -201,6 +197,110 @@ public class Superdemo {
         System.out.println(obj instanceof String);  //true
     //  getClass()获取对象的实例类型
         System.out.println(obj.getClass() == String.class);  //true
+    }
+}
+```
+
+#####  包装类的缓存
+
+``` java
+        // 缓存区间[-128,127],超出区间创建一个新空间
+//        Integer i1 = new Integer(250);  //创建一个对象
+//        Integer i1 = Integer.valueOf(250); // 手动装箱
+        Integer i1 = 250;   // 自动装箱
+        int i = Integer.valueOf(i1);  //拆箱
+        String str = String.valueOf(i1); //数字转字符串
+        int num = Integer.parseInt(str);  // 字符串转数字
+        Integer i2 = 250;
+        System.out.println(i1 == i2);      //false
+        System.out.println(i1.equals(i2)); //true
+```
+
+##### 模版方法的设计
+``` java
+// 模版方法
+abstract class TemplateFn {
+    // 算法的骨架
+    final public long getTime() {
+        long beginTime = System.currentTimeMillis();
+        // callback
+        dowork();
+        long endime = System.currentTimeMillis();
+        return endime - beginTime;
+    }
+
+    // 子类必须覆盖
+    protected abstract void dowork();
+
+}
+
+// 拼接字符串
+class StringDemo extends TemplateFn {
+    protected void dowork() {
+        String str = "";
+        for (int i = 0; i < 10000; i++) {
+            str += i;
+        }
+    }
+}
+
+// 加法
+class AddNumDemo extends TemplateFn {
+    protected void dowork() {
+        int sum = 0;
+        for (int i = 0; i < 10000; i++) {
+            sum += 1;
+        }
+    }
+}
+
+public class TemplateDemo {
+    public static void main(String[] args) {
+        System.out.println(new StringDemo().getTime());
+        System.out.println(new AddNumDemo().getTime());
+    }
+}
+```
+##### 单例方法和枚举方法运用
+``` java
+//    单例模式
+class Arrays {
+
+    /**
+     * 1.必须在该类中创建一个对象
+     * 2.私有化自身的构造器
+     * 3.暴露自己的一个方法
+     */
+
+    private static Arrays arrays = new Arrays();
+
+    private Arrays() {
+    }
+
+    public static Arrays getArrays() {
+        return arrays;
+    }
+
+
+    public void sort(int[] a) {
+        System.out.println("数字排序成功");
+    }
+}
+
+// 枚举代替单例
+enum Arrays {
+    arrays;
+
+    public void sort(int[] a) {
+        System.out.println("数字排序成功");
+    }
+}
+public class human {
+    public static void main(String[] args) {
+//        单例方法
+        Arrays.getArrays().sort(null);
+//        枚举方法
+        Arrays.arrays.sort(null);
     }
 }
 ```
